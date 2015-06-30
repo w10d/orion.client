@@ -479,6 +479,20 @@ define([
 							// the file changed, we need to figure out the correct auto triggers to use
 							setContentAssistProviders(editor, editor.getContentAssist());
 						}
+						
+						var sourceCodeActions = editor.getSourceCodeActions();
+						if (sourceCodeActions){
+							if (this.syntaxHighlighter){
+								var syntax = this.syntaxHighlighter;
+								var styler = syntax.getStyler();
+								if (styler && styler.getMatchingPattern){
+									var pattern = styler.getMatchingPattern(".*comment.line.double-slash.*");
+									if (pattern){
+										sourceCodeActions.setLineComment('TESTTESTTEST');
+									}
+								}
+							}
+						}
 					}.bind(this));
 					if(textView.onInputChanged) {
 						textView.onInputChanged({type:event.type});

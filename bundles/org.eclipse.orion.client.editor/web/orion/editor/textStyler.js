@@ -955,6 +955,9 @@ define("orion/editor/textStyler", ['orion/editor/annotations', 'orion/editor/eve
 			}
 			return result;
 		},
+		getMatchingPattern: function getMatchingPattern(patternID){
+			return this._stylerAdapter._patternManager.getPatterns(patternID);
+		},
 		getTextModel: function() {
 			var model = this._view.getModel();
 			if (model.getBaseModel) {
