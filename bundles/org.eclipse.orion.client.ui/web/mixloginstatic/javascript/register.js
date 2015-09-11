@@ -101,10 +101,13 @@ define(['domReady', 'orion/xhr', 'orion/xsrfUtils', './common'], function(domRea
 			document.getElementById("passwordContainer").style.display = "none";
 			document.getElementById("repeatPasswordContainer").style.display = "none";
 			document.getElementById("rightSection").style.display = "none";
-			document.getElementById("description").innerHTML = "Almost there! This account will be associated with your Google or Github account in the future.";
+			document.getElementById("description").innerHTML = "Almost there! This account will be associated with your authentication provider in the future.";
 			document.getElementById("username").value = username;
 			document.getElementById("email").value = email;
 			document.getElementById("signUpBtn").addEventListener("click", confirmCreateUser, false);
+			if (common.getParam("auto-register") == "true") {
+			    document.getElementById("signUpBtn").click();
+			}
 		} else {
 			document.getElementById("signUpBtn").addEventListener("click", confirmCreateUser, false);
 			document.getElementById("show-password").addEventListener("click", common.passwordSwitcher);
@@ -125,6 +128,7 @@ define(['domReady', 'orion/xhr', 'orion/xsrfUtils', './common'], function(domRea
 	}
 
 	domReady(function() {
+		common.redirectIfAuthProviderIsSet();
 		common.checkUserCreationEnabled();
 		common.checkEmailConfigured();
 

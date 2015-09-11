@@ -10,13 +10,31 @@
  ******************************************************************************/
 /*eslint-env amd, browser*/
 /*global $*/
-define(['orion/PageUtil', 'orion/xsrfUtils', 'orion/PageLinks', './jquery'],function(PageUtil, xsrfUtils, PageLinks) {
+define(['orion/PageUtil', 'orion/xsrfUtils', 'orion/PageLinks', 'orion/xhr', './jquery'],function(PageUtil, xsrfUtils, PageLinks, xhr) {
     var errorClass = "has-error";
     var successClass = "success";
     var emailConfigured = true;
 
     function addClass(ele,cls) {
       if (!hasClass(ele,cls)) ele.className += " "+cls;
+    }
+
+    function redirectIfAuthProviderIsSet() {
+        if (window.location.href.indexOf("oauth") == -1) {
+            xhr("POST", "../login/redirectinfo", { //$NON-NLS-0$
+                headers: {
+                    "Orion-Version": "1" //$NON-NLS-0$
+                },
+                timeout: 15000
+            }).then(function(result) {
+                var authProvider = JSON.parse(result.response).AuthProvider;
+                if (authProvider) {
+                    window.location = "../login/oauth?oauth=" + authProvider; //$NON-NLS-0$
+                }
+            }, function(error) {
+                console.error("Post request failed: " + (error.response ? error.response : "no details given"));
+            });
+        }
     }
 
     function confirmLogin(e, username, password) {
@@ -370,6 +388,7 @@ define(['orion/PageUtil', 'orion/xsrfUtils', 'orion/PageLinks', './jquery'],func
 
     return {
         addClass: addClass,
+        redirectIfAuthProviderIsSet : redirectIfAuthProviderIsSet,
         checkEmailConfigured: checkEmailConfigured,
         checkUserCreationEnabled: checkUserCreationEnabled,
         copyText: copyText,
