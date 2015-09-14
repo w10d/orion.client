@@ -435,6 +435,7 @@ define([
 			return deferred;
 		},
 		showViewMode: function(show) {
+			var show = false; // hack to hide the launch configuration bar since it is useless for palantir products.
 			var sidebar = this.sidebar;
 			var showing = !!sidebar.getViewMode(this.id);
 			if (showing === show) { return; }
