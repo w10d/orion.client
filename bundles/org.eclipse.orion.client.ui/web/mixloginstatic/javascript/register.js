@@ -104,7 +104,11 @@ define(['domReady', 'orion/xhr', 'orion/xsrfUtils', './common'], function(domRea
 			document.getElementById("description").innerHTML = "Almost there! This account will be associated with your authentication provider in the future.";
 			document.getElementById("username").value = username;
 			document.getElementById("email").value = email;
-			document.getElementById("signUpBtn").addEventListener("click", confirmCreateUser, false);
+			if (common.getParam("auto-register") == "true") {
+			    confirmCreateUser(window.event);
+			} else {
+			    document.getElementById("signUpBtn").addEventListener("click", confirmCreateUser, false);
+			}
 		} else {
 			document.getElementById("signUpBtn").addEventListener("click", confirmCreateUser, false);
 			document.getElementById("show-password").addEventListener("click", common.passwordSwitcher);

@@ -55,7 +55,6 @@ define(['domReady', 'orion/xhr', 'orion/webui/littlelib', './common'], function(
 	}
 
 	domReady(function() {
-		common.redirectIfAuthProviderIsSet();
 		common.checkEmailConfigured();
 
 		/* initialize metrics collection for this page */

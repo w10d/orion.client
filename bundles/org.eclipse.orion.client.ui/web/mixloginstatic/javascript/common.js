@@ -20,7 +20,7 @@ define(['orion/PageUtil', 'orion/xsrfUtils', 'orion/PageLinks', 'orion/xhr', './
     }
 
     function redirectIfAuthProviderIsSet() {
-        if(window.location.href.indexOf("oauth") == -1) {
+        if (window.location.href.indexOf("oauth") == -1) {
             xhr("POST", "../login/redirectinfo", { //$NON-NLS-0$
                 headers: {
                     "Orion-Version": "1" //$NON-NLS-0$
