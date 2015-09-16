@@ -11,9 +11,10 @@
 
 /*eslint-env browser, amd*/
 define([
-	"orion/plugin", 
-	"plugins/fileClientPlugin",
+	"orion/plugin",
+	"../mixloginstatic/javascript/common",
 	"plugins/authenticationPlugin",
+	"plugins/fileClientPlugin",
 	"plugins/jslintPlugin",
 	"plugins/googleAnalyticsPlugin",
 	"plugins/languageToolsPlugin",
@@ -23,23 +24,30 @@ define([
 	"plugins/webEditingPlugin",
 	"profile/userservicePlugin",
 	"plugins/helpPlugin"
-], function(PluginProvider) {
-	
+], function(PluginProvider, common) {
 	var plugins = Array.prototype.slice.call(arguments);
-	plugins.shift();
+	plugins.shift(); // skip plugin
+	plugins.shift(); // skip common
 
 	function connect(pluginProvider) {
-		var login = new URL("../mixloginstatic/LoginWindow.html", self.location.href).href;
-		var headers = {
-			name: "Orion Core Support",
-			version: "1.0",
-			description: "This plug-in provides the core Orion support.",
-			login: login
-		};
-		pluginProvider = pluginProvider || new PluginProvider();
-		pluginProvider.updateHeaders(headers);
-		registerServiceProviders(pluginProvider);
-		pluginProvider.connect();
+		common.getAuthProvider().then(function(provider) {
+			if (provider) {
+				var login = new URL("../login/oauth?oauth=" + provider, self.location.href).href;
+			} else {
+				var login = new URL("../mixloginstatic/LoginWindow.html", self.location.href).href;
+			}
+
+			var headers = {
+				name: "Orion Core Support",
+				version: "1.0",
+				description: "This plug-in provides the core Orion support.",
+				login: login
+			};
+			pluginProvider = pluginProvider || new PluginProvider();
+			pluginProvider.updateHeaders(headers);
+			registerServiceProviders(pluginProvider);
+			pluginProvider.connect();
+		});
 	}
 
 	function registerServiceProviders(provider) {
