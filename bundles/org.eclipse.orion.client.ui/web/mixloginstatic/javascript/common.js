@@ -20,21 +20,19 @@ define(['orion/PageUtil', 'orion/xsrfUtils', 'orion/PageLinks', 'orion/xhr', './
     }
 
     function redirectIfAuthProviderIsSet() {
-        if (window.location.href.indexOf("oauth") == -1) {
-            xhr("POST", "../login/redirectinfo", { //$NON-NLS-0$
-                headers: {
-                    "Orion-Version": "1" //$NON-NLS-0$
-                },
-                timeout: 15000
-            }).then(function(result) {
-                var authProvider = JSON.parse(result.response).AuthProvider;
-                if (authProvider) {
-                    window.location = "../login/oauth?oauth=" + authProvider; //$NON-NLS-0$
-                }
-            }, function(error) {
-                console.error("Post request failed: " + (error.response ? error.response : "no details given"));
-            });
-        }
+        xhr("POST", "../login/redirectinfo", { //$NON-NLS-0$
+            headers: {
+                "Orion-Version": "1" //$NON-NLS-0$
+            },
+            timeout: 15000
+        }).then(function(result) {
+            var authProvider = JSON.parse(result.response).AuthProvider;
+            if (authProvider) {
+                window.location = "../login/oauth?oauth=" + authProvider; //$NON-NLS-0$
+            }
+        }, function(error) {
+            console.error("Post request failed: " + (error.response ? error.response : "no details given"));
+        });
     }
 
     function confirmLogin(e, username, password) {

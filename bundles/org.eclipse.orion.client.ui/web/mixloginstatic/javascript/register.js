@@ -12,7 +12,9 @@
 /*global URL*/
 define(['domReady', 'orion/xhr', 'orion/xsrfUtils', './common'], function(domReady, xhr, xsrfUtils, common) {
 	function confirmCreateUser(e) {
-		e.preventDefault();
+		if (e !== undefined) {
+			e.preventDefault();
+		}
 
 		var linkedUser = common.getParam("oauth") === "create" ? true : false;
 		var authForm = document.getElementById("orion-auth"),
@@ -33,7 +35,10 @@ define(['domReady', 'orion/xhr', 'orion/xsrfUtils', './common'], function(domRea
 		var mypostrequest = new XMLHttpRequest();
 		mypostrequest.onreadystatechange = function() {
 			if (mypostrequest.readyState === 4) {
-				if (mypostrequest.status !== 200 && window.location.href.indexOf("http") !== -1) {
+				if (common.getParam("auto-register") == "true" &&
+					(mypostrequest.status === 200 || mypostrequest.status === 201)) {
+					common.redirectIfAuthProviderIsSet();
+				} else if (mypostrequest.status !== 200 && window.location.href.indexOf("http") !== -1) {
 					if (!mypostrequest.responseText) {
 						return;
 					}
@@ -104,10 +109,9 @@ define(['domReady', 'orion/xhr', 'orion/xsrfUtils', './common'], function(domRea
 			document.getElementById("description").innerHTML = "Almost there! This account will be associated with your authentication provider in the future.";
 			document.getElementById("username").value = username;
 			document.getElementById("email").value = email;
-			var signUpButton = document.getElementById("signUpBtn");
-			signUpButton.addEventListener("click", confirmCreateUser, false);
+			document.getElementById("signUpBtn").addEventListener("click", confirmCreateUser, false);
 			if (common.getParam("auto-register") == "true") {
-			    signUpButton.click();
+			    confirmCreateUser();
 			}
 		} else {
 			document.getElementById("signUpBtn").addEventListener("click", confirmCreateUser, false);
@@ -129,7 +133,9 @@ define(['domReady', 'orion/xhr', 'orion/xsrfUtils', './common'], function(domRea
 	}
 
 	domReady(function() {
-		common.redirectIfAuthProviderIsSet();
+		if (window.location.href.indexOf("oauth") == -1) {
+			common.redirectIfAuthProviderIsSet();
+		}
 		common.checkUserCreationEnabled();
 		common.checkEmailConfigured();
 
