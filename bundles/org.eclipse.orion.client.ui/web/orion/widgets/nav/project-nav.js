@@ -110,7 +110,8 @@ define([
 			_self.dependenciesDisplatcher.addEventListener(eventType, _self.dependneciesListener);
 		});
 		
-		this._createRunBar();
+		// hack to hide the launch configuration bar since it is useless for palantir products.
+		//this._createRunBar();
 	}
 	ProjectNavExplorer.prototype = Object.create(CommonNavExplorer.prototype);
 	objects.mixin(ProjectNavExplorer.prototype, /** @lends orion.sidebar.ProjectNavExplorer.prototype */ {
@@ -435,7 +436,6 @@ define([
 			return deferred;
 		},
 		showViewMode: function(show) {
-			var show = false; // hack to hide the launch configuration bar since it is useless for palantir products.
 			var sidebar = this.sidebar;
 			var showing = !!sidebar.getViewMode(this.id);
 			if (showing === show) { return; }
