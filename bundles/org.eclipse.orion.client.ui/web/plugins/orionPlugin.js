@@ -23,8 +23,7 @@ define([
 	"plugins/webEditingPlugin",
 	"profile/userservicePlugin",
 	"plugins/helpPlugin",
-	"shell/plugins/shellPagePlugin",
-	"plugins/site/sitePlugin"
+	"shell/plugins/shellPagePlugin"
 ], function(PluginProvider) {
 	
 	var plugins = Array.prototype.slice.call(arguments);
