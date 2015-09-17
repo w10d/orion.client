@@ -19,13 +19,23 @@ define(['orion/PageUtil', 'orion/xsrfUtils', 'orion/PageLinks', 'orion/xhr', './
       if (!hasClass(ele,cls)) ele.className += " "+cls;
     }
 
-    function redirectIfAuthProviderIsSet() {
-        xhr("POST", "../login/redirectinfo", { //$NON-NLS-0$
+    function getAuthProvider() {
+        return getRedirectInfo().then(function(result) {
+            return JSON.parse(result.response).AuthProvider;
+        });
+    }
+
+    function getRedirectInfo() {
+        return xhr("POST", "../login/redirectinfo", { //$NON-NLS-0$
             headers: {
                 "Orion-Version": "1" //$NON-NLS-0$
             },
             timeout: 15000
-        }).then(function(result) {
+        });
+    }
+
+    function redirectIfAuthProviderIsSet() {
+        getRedirectInfo().then(function(result) {
             var authProvider = JSON.parse(result.response).AuthProvider;
             if (authProvider) {
                 window.location = "../login/oauth?oauth=" + authProvider; //$NON-NLS-0$
@@ -393,6 +403,7 @@ define(['orion/PageUtil', 'orion/xsrfUtils', 'orion/PageLinks', 'orion/xhr', './
         confirmLogin: confirmLogin,
         createOAuthLink: createOAuthLink,
         decodeBase64: decodeBase64,
+        getAuthProvider: getAuthProvider,
         getParam: getParam,
         getRedirect: getRedirect,
         passwordSwitcher: passwordSwitcher,
