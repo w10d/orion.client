@@ -22,8 +22,7 @@ define([
 	"plugins/taskPlugin",
 	"plugins/webEditingPlugin",
 	"profile/userservicePlugin",
-	"plugins/helpPlugin",
-	"shell/plugins/shellPagePlugin"
+	"plugins/helpPlugin"
 ], function(PluginProvider) {
 	
 	var plugins = Array.prototype.slice.call(arguments);
