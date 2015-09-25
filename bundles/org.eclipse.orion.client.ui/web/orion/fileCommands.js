@@ -1102,6 +1102,8 @@ define(['i18n!orion/navigate/nls/messages', 'orion/webui/littlelib', 'orion/i18n
 					var name = JSON.parse(result.response)[FOLDER_NAME_KEY];
 					var path = JSON.parse(result.response)[PATH_NAME_KEY];
 					createFunction(name, path);
+				}, function(error) {
+					errorHandler(error);
 				});
 			},
 			visibleWhen: canCreateProject
