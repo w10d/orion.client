@@ -68,11 +68,17 @@ define([
 		try {
 			/* try ssh:// protocol */
 			var url = new URL(gitUrl);
-			return {
-				host : url.hostname,
-				port : url.port
-			};
-					
+			if (url.protocol === "file:") {
+				return {
+					host : url.hostname || "localhost",
+					port : url.port || 22
+				};
+			} else {
+				return {
+					host : url.hostname,
+					port : url.port
+				};
+			}
 		} catch(e){
 			/* try scp-like uri */
 			try {
