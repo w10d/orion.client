@@ -46,6 +46,7 @@ define([
 	StatusReportingService.prototype = /** @lends orion.status.StatusReportingService.prototype */ {
 	
 		_init: function() {
+			window.clearTimeout(this._timer);
 			var closeButton = lib.node(closeButtonDomId); //$NON-NLS-0$
 			if (closeButton && !this._hookedClose) {
 				closeButton.style.cursor = "pointer"; //$NON-NLS-0$
@@ -351,9 +352,6 @@ define([
 			if (!links.length && status.Severity !== SEV_WARNING && status.Severity !== SEV_ERROR && !this._cancelMsg) {
 				// Message has no links in it, and is not a Warning or Error severity. Therefore we consider
 				// it unimportant and will auto hide it in 5 seconds.
-				if(this._timer){
-					window.clearTimeout(this._timer);
-				}
 				this._timer = window.setTimeout(function(){
 					this.setProgressMessage("");
 					this._timer = null;
