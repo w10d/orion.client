@@ -540,7 +540,7 @@ define([
 			var metadata = this.getFileMetadata();
 			if (contentType) {
 				label = contentType.id;
-			} else if (metadata) {
+			} else if (metadata && metadata.Name) {
 				var _name = metadata.Name;
 				var index = _name.lastIndexOf("."); //$NON-NLS-0$
 				if (index >= 0) {
