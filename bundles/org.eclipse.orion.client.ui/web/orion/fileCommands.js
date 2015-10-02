@@ -1070,45 +1070,48 @@ define(['i18n!orion/navigate/nls/messages', 'orion/webui/littlelib', 'orion/i18n
 		});
 		commandService.addCommand(linkProjectCommand);
 		
-		var autoLinkProjectCommand = new mCommands.Command({
-			name: "Auto-link to server",
-			tooltip: "Auto-import whichever projects have been configured for this server",
-			description: messages["CreateLinkedFolder"],
-			imageClass: "core-sprite-link", //$NON-NLS-0$
-			id: "orion.new.autoLinkProject", //$NON-NLS-0$
-			callback: function(data) {
-				var createFunction = function(name, path) {
-					if (name && path) {
-						var deferred = fileClient.createProject(explorer.treeRoot.ChildrenLocation, name, path, true);
-						progressService.showWhile(deferred, i18nUtil.formatMessage(messages["Linking to ${0}"], path)).then(function(newFolder) {
-							dispatchModelEventOn({type: "create", parent: explorer.treeRoot, newValue: newFolder }); //$NON-NLS-0$
-						}, errorHandler);
-					} else {
-						errorHandler(i18nUtil.formatMessage("Could not link to folder with name '${0}' and path '${1}'", name, path));
-					}
-				};
-				var FOLDER_NAME_KEY = "plugin.autolink.folder.name";
-				var PATH_NAME_KEY = "plugin.autolink.path";
-				xhr("POST", "/config", {
-					headers: {
-						"Orion-Version": "1"
-					},
-					data: JSON.stringify({
-						"configKeys": [FOLDER_NAME_KEY, PATH_NAME_KEY]
-					}),
-					timeout: 15000,
-					log: false
-				}).then(function(result) {
-					var name = JSON.parse(result.response)[FOLDER_NAME_KEY];
-					var path = JSON.parse(result.response)[PATH_NAME_KEY];
-					createFunction(name, path);
-				}, function(error) {
-					errorHandler(error);
-				});
+		var FOLDER_NAME_KEY = "plugin.autolink.folder.name";
+		var PATH_NAME_KEY = "plugin.autolink.path";
+		xhr("POST", "/config", {
+			headers: {
+				"Orion-Version": "1"
 			},
-			visibleWhen: canCreateProject
+			data: JSON.stringify({
+				"configKeys": [FOLDER_NAME_KEY, PATH_NAME_KEY]
+			}),
+			timeout: 15000,
+			log: false
+		}).then(function(result) {
+			var name = JSON.parse(result.response)[FOLDER_NAME_KEY];
+			var path = JSON.parse(result.response)[PATH_NAME_KEY];
+			
+			var autoLinkProjectCommand = new mCommands.Command({
+				name: "Auto-link to server",
+				tooltip: "Auto-import whichever projects have been configured for this server",
+				description: messages["CreateLinkedFolder"],
+				imageClass: "core-sprite-link", //$NON-NLS-0$
+				id: "orion.new.autoLinkProject", //$NON-NLS-0$
+				callback: function(data) {
+					var createFunction = function(name, path) {
+						if (name && path) {
+							var deferred = fileClient.createProject(explorer.treeRoot.ChildrenLocation, name, path, true);
+							progressService.showWhile(deferred, i18nUtil.formatMessage(messages["Linking to ${0}"], path)).then(function(newFolder) {
+								dispatchModelEventOn({type: "create", parent: explorer.treeRoot, newValue: newFolder }); //$NON-NLS-0$
+							}, errorHandler);
+						} else {
+							errorHandler(i18nUtil.formatMessage("Could not link to folder with name '${0}' and path '${1}'", name, path));
+						}
+					};
+					createFunction(name, path);
+				},
+				visibleWhen: function(item) { 
+					return canCreateProject(item) && name && path;
+				}
+			});
+			commandService.addCommand(autoLinkProjectCommand);
+		}, function(error) {
+			errorHandler(error);
 		});
-		commandService.addCommand(autoLinkProjectCommand);
 
 		var goUpCommand = new mCommands.Command({
 			name: messages["Go Up"],
