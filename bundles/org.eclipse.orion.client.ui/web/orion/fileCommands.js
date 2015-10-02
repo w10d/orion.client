@@ -1086,8 +1086,8 @@ define(['i18n!orion/navigate/nls/messages', 'orion/webui/littlelib', 'orion/i18n
 			var path = JSON.parse(result.response)[PATH_NAME_KEY];
 			
 			var autoLinkProjectCommand = new mCommands.Command({
-				name: "Auto-link to server",
-				tooltip: "Auto-import whichever projects have been configured for this server",
+				name: "Auto-link to Server",
+				tooltip: "Link to pre-configured content on the server",
 				description: messages["CreateLinkedFolder"],
 				imageClass: "core-sprite-link", //$NON-NLS-0$
 				id: "orion.new.autoLinkProject", //$NON-NLS-0$
